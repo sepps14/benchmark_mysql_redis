@@ -60,7 +60,6 @@ class MySQLDB(DataStore):
             session = Session()
             with session.begin():
                 stat = session.query(Stat).filter(Stat.profile_id == profile_id).first()
-                print(f'profile_id: {profile_id}; stat: {stat}')
                 if stat is not None:
                     stat.counts = stat.counts + 1
                     session.add(stat)

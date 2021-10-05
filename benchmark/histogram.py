@@ -31,7 +31,14 @@ redis_insert_times = np.array(redis_insert_times)
 mysql_increment_times = np.array(mysql_increment_times)
 redis_increment_times = np.array(redis_increment_times)
 
-def plot(s1, s2, fig_name):
+print(f'mysql insert 50th percentile    = {np.percentile(mysql_insert_times, 50)}')
+print(f'redis insert 50th percentile    = {np.percentile(redis_insert_times, 50)}')
+print(f'mysql increment 50th percentile = {np.percentile(mysql_increment_times, 50)}')
+print(f'redis increment 50th percentile = {np.percentile(redis_increment_times, 50)}')
+
+def plot(series_pair, labels, fig_name):
+    (s1, s2) = series_pair
+    (l1, l2) = labels
     s1_p_99 = np.percentile(s1, 99)
     s1_p_1 = np.percentile(s1, 1)
     s1_bins = np.linspace(s1_p_1, s1_p_99, 100)
@@ -40,13 +47,16 @@ def plot(s1, s2, fig_name):
     s2_p_1 = np.percentile(s2, 1)
     s2_bins = np.linspace(s2_p_1, s2_p_99, 100)
 
-    plt.hist(s1, s1_bins, edgecolor='blue')
-    plt.axvline(s1_p_1, color='blue')
-    plt.axvline(s1_p_99, color='blue')
-    plt.hist(s2, s2_bins, edgecolor='red', fill=False)
-    plt.axvline(s2_p_99, color='red')
-    plt.axvline(s2_p_1, color='red')
+    plt.hist(s1, s1_bins, edgecolor='blue', fill=False, label=l1)
+    plt.axvline(s1_p_1, color='blue', linestyle='dashed')
+    plt.axvline(s1_p_99, color='blue', linestyle='dashed')
+    plt.hist(s2, s2_bins, edgecolor='red', fill=False, label=l2)
+    plt.axvline(s2_p_99, color='red', linestyle='dashed')
+    plt.axvline(s2_p_1, color='red', linestyle='dashed')
+    plt.legend(loc="upper right")
+    plt.xlabel('time (s)')
     plt.savefig(fig_name)
+    plt.cla()
 
-plot(mysql_insert_times, redis_insert_times, 'redis_v_mysql_insert_time.png')
-plot(mysql_increment_times, redis_increment_times, 'redis_v_mysql_increment_time.png')
+plot([mysql_insert_times, redis_insert_times], ['mysql', 'redis'], 'redis_v_mysql_insert_time.png')
+plot([mysql_increment_times, redis_increment_times], ['mysql', 'redis'], 'redis_v_mysql_increment_time.png')

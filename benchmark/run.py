@@ -4,7 +4,7 @@ import requests
 
 HOST = 'localhost'
 PORT = 5000
-N = 1000
+N = 10000
 
 
 mysql_insert_times = 'mysql_insert_times.txt'
